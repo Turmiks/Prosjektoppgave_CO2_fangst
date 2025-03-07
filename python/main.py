@@ -5,14 +5,20 @@ import numpy as np
 import scipy
 import unit_operations
 import thermodynamics
-
+import constants3
 #=========================================================================
-#   Main script for simulating the process of CO2 capture
-#   
+#   Main script for simulating a process for CO2 capture given
+#   as a group project in TKP4120
+#
 #   Created: 06/03/2025
 #   Author(s): Iver Mihle Asklund
 #   
 #=========================================================================
+#   Fetching and consolidating stream data fram constants3.py
+#=========================================================================
+
+
+
 
 
 #=========================================================================
