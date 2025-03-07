@@ -3,8 +3,8 @@
 #=========================================================================
 import numpy as np
 import scipy
-import unit_operations
-import thermodynamics
+import unit_operations as unit
+import thermodynamics as thermo
 import constants3
 #=========================================================================
 #   Main script for simulating a process for CO2 capture given
