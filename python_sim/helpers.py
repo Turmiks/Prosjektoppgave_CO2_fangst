@@ -87,7 +87,7 @@ def wth2mol_frac(components: list[str], fractions: list[float], total: float) ->
 class Stream():
     
     def __init__(
-            self, components: list, wth_fractions: list[float], flow_rate: float,
+            self, components: list[str], wth_fractions: list[float], flow_rate: float,
             temperature: float, pressure: float,
             enthalpy: float, phase: str):
         
