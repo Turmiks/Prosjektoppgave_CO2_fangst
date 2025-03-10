@@ -4,6 +4,10 @@
 import numpy as np
 import scipy 
 
+#   local
+import python_sim.constants3
+import python_sim.helpers
+import python_sim.thermodynamics
 #=========================================================================
 #   module containing classes for simulating unit operations in 
 #   chemical processing plants
@@ -15,13 +19,15 @@ import scipy
 
 class Absorber():
 
-    def __init__(self, input_stream_1: list, input_stream_2: list, output_stream_1: list, Output_stream_2: list):
+    def __init__(self, input_stream_1: object, input_stream_2: object,
+                 output_stream_1: object, Output_stream_2: object,
+                 capture_rate: float):
 
         self.input_stream_1 = input_stream_1
         self.input_stream_2 = input_stream_2
         self.output_stream_1 = output_stream_1
         self.input_stream_2 = Output_stream_2
-
+        self.capture_rate = capture_rate
         pass
 
 

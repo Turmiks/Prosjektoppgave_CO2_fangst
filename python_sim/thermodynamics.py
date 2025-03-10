@@ -4,11 +4,17 @@
 
 import numpy as np
 import scipy
-import constants3
+
+#   local
+
+
+import python_sim.constants3
+import python_sim.helpers
+import python_sim.unit_operations
 #=========================================================================
 #   Constants
 #=========================================================================
-Hc: list = constants3.Hc
+Hc: list = python_sim.constants3.Hc
 
 #=========================================================================
 #   Functions for numerically solving thermodynamic equations
@@ -50,3 +56,10 @@ def henrys_constant(temperature: float, loading: float, constants: list = Hc) ->
 
     return k_H
 
+def enthalpy(heat: float, pressure: float, volume: float, phase: str='liquid') -> float:
+
+    calculated_enthalpy: float = 0
+    if phase == 'liquid':
+        calculated_enthalpy = heat + pressure*volume
+
+    return calculated_enthalpy
