@@ -1,14 +1,15 @@
 #=========================================================================
 #   IMPORTS
 #=========================================================================
+#   standard packages
+from time import time 
 
+#   3rd party packages
 import numpy as np
 import scipy
 
 #   local
-from python_sim.constants3 import *
-import python_sim.thermodynamics
-import python_sim.unit_operations
+from .constants3 import *
 
 #=========================================================================
 #   Constants
@@ -59,9 +60,12 @@ def table(title: str, header: list[str], rows: list[list[float|str]],) -> None:
     return None
 
 # UNFINISHED
-def wth2mol_frac(components: list[str], fractions: list[float], total: float) -> list:
+def wtm_frac(components: list[str]=None, fractions: list[float]=None, total: float=None) -> list[float]:
     
-    assert(len(components) == len(fractions)), 'error in specified arguments'
+    if components or fractions or total == None:
+        return None
+    
+    assert(len(components) == len(fractions)), 'inconsistent list length'
 
     component_masses: list = [fractions[i[0]]*total for i in enumerate(fractions)]
     component_amounts: list = []
@@ -78,7 +82,15 @@ def wth2mol_frac(components: list[str], fractions: list[float], total: float) ->
 
     return mol_frac
 
-
+  
+def timeit(func): 
+    def wrap_func(*args, **kwargs): 
+        t1 = time() 
+        result = func(*args, **kwargs) 
+        t2 = time() 
+        print(f'Function {func.__name__!r} executed in {(t2-t1):.4f}s') 
+        return result 
+    return wrap_func 
 
 #=========================================================================
 #   Classes
@@ -87,22 +99,50 @@ def wth2mol_frac(components: list[str], fractions: list[float], total: float) ->
 class Stream():
     
     def __init__(
-            self, components: list[str], wth_fractions: list[float], flow_rate: float,
-            temperature: float, pressure: float,
-            enthalpy: float, phase: str):
+            self, composition: list[str]=None, wth_fractions: list[float]=None, flow_rate: float=None,
+            temperature: float=298, pressure: float=10e5,
+            enthalpy: float=None, phase: str='liquid'):
         
+        #   material attributes
         self.flow_rate = flow_rate
-        self.components = components
+        self.composition = composition
         self.wth_fractions = wth_fractions
+        self.mol_fractions = wtm_frac(composition, wth_fractions, flow_rate)
+        self.component_masses = [w*c for w, c in zip(wth_fractions, composition)]
+        self.loading = None
+        #   thermodynamic attributes
         self.temperature = temperature
+        self.heat_capacity = None
         self.pressure = pressure
         self.enthalpy = enthalpy
         self.phase = phase
-        self.listed: list = [self.flow_rate, self.components,
-                             self.wth_fractions, self.temperature,
-                             self.pressure, self.enthalpy,
-                             self.phase,]
+
         pass
+    
+    def update(self, flow_rate: float=None, composition: list=None,
+               wth_fractions: list=None, loading: float=None,
+               temperature: float=None, pressure: float=None,
+               enthalpy: float=None, phase: str=None
+               ) -> None:
+        
+        if flow_rate is not None:
+            self.flow_rate = flow_rate
+        if composition is not None:
+            self.composition = composition
+        if wth_fractions is not None:
+            self.wth_fractions = wth_fractions
+        if loading is not None:
+            self.loading = loading
+        if temperature is not None:
+            self.temperature = temperature
+        if pressure is not None:
+            self.pressure = pressure
+        if enthalpy is not None:
+            self.enthalpy = enthalpy
+        if phase is not None:
+            self.phase = phase
+        
+        return None
 
     def change_temp(self, new_temp: float) -> None:
         print(f'changed temperature from {self.temperature}K to {new_temp}K')

@@ -6,15 +6,13 @@ import numpy as np
 import scipy
 
 #   local
+from .constants3 import *
 
 
-import python_sim.constants3
-import python_sim.helpers
-import python_sim.unit_operations
 #=========================================================================
 #   Constants
 #=========================================================================
-Hc: list = python_sim.constants3.Hc
+Hc: list =  0 #python_sim.constants3.Hc
 
 #=========================================================================
 #   Functions for numerically solving thermodynamic equations

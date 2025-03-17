@@ -3,13 +3,10 @@
 #=========================================================================
 import numpy as np
 import scipy
-""" import python_sim as ps
-from python_sim import helpers
-from python_sim import constants3 """
+
+#   Local imports
+import python_sim as ps
 from python_sim.constants3 import *
-import python_sim.helpers as ps
-import python_sim.thermodynamics as thermo
-import python_sim.unit_operations as unit
 #=========================================================================
 #   Main script for simulating a process for CO2 capture given
 #   as a group project in TKP4120
@@ -28,6 +25,7 @@ mol_mass: dict = {'CO2': Mw[0],
                   'O2' : Mw[3],
                   'MEA' : MwMEA,
                   }
+
 stream_1_wth_frac: list = [wc1, wh1, wn1, wo1]
 
 stream_1: object = ps.Stream(['CO2','H2O','N2', 'O2'],
@@ -60,7 +58,7 @@ def main(version: str, mode:str='std'):
         print('running...')
 
         stream_1.change_temp(313.15)
-        print(ps.wth2mol_frac(stream_1.components, stream_1.wth_fractions, stream_1.flow_rate))
+        print(ps.wtm_frac(stream_1.components, stream_1.wth_fractions, stream_1.flow_rate))
         print('Simulation finished')
         stream_1.printout()
         print('\n')
