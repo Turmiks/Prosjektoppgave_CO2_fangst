@@ -10,6 +10,7 @@ import scipy
 
 #   local
 from .constants3 import *
+from .thermodynamics import molar_mass
 
 #=========================================================================
 #   Constants
@@ -62,7 +63,7 @@ def table(title: str, header: list[str], rows: list[list[float|str]],) -> None:
 # UNFINISHED
 def wtm_frac(components: list[str]=None, fractions: list[float]=None, total: float=None) -> list[float]:
     
-    if components or fractions or total == None:
+    if components == None or fractions == None or total == None:
         return None
     
     assert(len(components) == len(fractions)), 'inconsistent list length'
@@ -95,27 +96,42 @@ def timeit(func):
 #=========================================================================
 #   Classes
 #=========================================================================
+class Substance():
+
+    def __init__(self, name: str, elements: list,
+                 formation_enthalpy: float, heat_capacity: float,
+                 mol_mass: float=None):
+
+        self.name = name
+        self.elements = elements
+        self.formation_enthalpy = formation_enthalpy
+        self.heat_capacity = heat_capacity
+        self.mol_mass = mol_mass
+        pass
 
 class Stream():
     
     def __init__(
             self, composition: list[str]=None, wth_fractions: list[float]=None, flow_rate: float=None,
-            temperature: float=298, pressure: float=10e5,
-            enthalpy: float=None, phase: str='liquid'):
+            temperature: float=298, pressure: float=10e5, enthalpy: float=None, loading: float=None, phase: str='liquid'):
         
         #   material attributes
-        self.flow_rate = flow_rate
-        self.composition = composition
-        self.wth_fractions = wth_fractions
-        self.mol_fractions = wtm_frac(composition, wth_fractions, flow_rate)
-        self.component_masses = [w*c for w, c in zip(wth_fractions, composition)]
-        self.loading = None
+        self.flow_rate = flow_rate  #   massflow [Kg/s]
+        self.composition = composition  #   list of capitalized strings defining stream components
+        self.wth_fractions = wth_fractions  #   weight fractions of stream components
+        self.mol_fractions = wtm_frac(composition, wth_fractions, flow_rate)    #   molar fractions
+        self.loading = None     # applicable to streams 4, 5, 6 and 7
+        try:
+            self.component_masses = [w*molar_mass(c) for w, c in zip(wth_fractions, composition)]   #   total masses of components
+        except:
+            self.component_masses = [None]*len(composition)
+
         #   thermodynamic attributes
-        self.temperature = temperature
-        self.heat_capacity = None
-        self.pressure = pressure
-        self.enthalpy = enthalpy
-        self.phase = phase
+        self.temperature = temperature  #   [Kelvin]
+        self.heat_capacity = None   #   [J/(kg*K)]
+        self.pressure = pressure    #   [Pa]
+        self.enthalpy = enthalpy    #   [Joule]
+        self.phase = phase          #   string denoting phase ['gas', 'liquid', 'solid']
 
         pass
     
@@ -155,7 +171,7 @@ class Stream():
         print('-'*3)
         print('Vektfraksjoner:')
         print('-'*30)
-        for i in enumerate(self.components):
+        for i in enumerate(self.composition):
             print(f'{i[1]}: {self.wth_fractions[i[0]]}')
             print('-'*30)
         print(f'Temperatur: {self.temperature}K')
@@ -167,9 +183,3 @@ class Stream():
         print(f'Tilstand: {self.phase}')
         
     
-    
-""" tit: str = 'Tabell over ferdig data'
-a = ['kollonne 1', 'kollonne 2', 'kollonne 3', 'kollonne 4']
-b = [[1,2,3,4],[5,6,7,8],[9,10,11,12]]
-
-table(tit, a, b) """
