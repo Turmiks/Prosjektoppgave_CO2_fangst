@@ -124,6 +124,8 @@ print('creating unit operations...')
 
 absorber_K1: object = ps.Absorber(feed_stream_1 = stream_1,
                                   feed_stream_2 = stream_3,
+                                  output_stream_bot = stream_4,
+                                  output_stream_top = stream_2,
                                   capture_rate = wcapture)
 
 """ stripper_K2: object = ps.Stripper(stream_5,
@@ -213,7 +215,7 @@ def main(version: str, mode:str='std'):
         stream_1.printout()
         print('\n')
 
-        
+
         #   DEBUG PRINT
         print('printing stream data...')
         streams = [stream_1,stream_2,stream_3, stream_4,stream_5,stream_6,stream_7,stream_8,stream_9,stream_10,stream_11]
